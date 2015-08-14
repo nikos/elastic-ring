@@ -1,5 +1,7 @@
 (ns mini-restful.models.events)
 
+;; TODO: see famito/djangoapp/famito/events/models.py for details
+
 (declare my-events)
 
 (defn create [event]

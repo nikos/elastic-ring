@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [ring/ring-core "1.4.0"]
                  [ring/ring-jetty-adapter "1.4.0"]
+                 [clojurewerkz/elastisch "2.1.0"]
                  [compojure "1.4.0"]
                  [cheshire "5.5.0"]
                  [ring/ring-json "0.4.0"]
@@ -16,7 +17,7 @@
 
   ; The lein-ring plugin allows us to easily start a development web server
   ; with "lein ring server". It also allows us to package up our application
-  ; as a standalone .jar or as a .war for deployment to a servlet contianer
+  ; as a standalone .jar or as a .war for deployment to a servlet container
   ; (I know... SO 2005).
   :plugins [[lein-ring "0.9.6"]
             [lein-environ "1.0.0"]]
@@ -32,10 +33,10 @@
                          [ring-mock "0.1.5"]]
           ; Since we are using environ, we can override these values with
           ; environment variables in production.
-          :env          {:elastic-host "localhost"
+          :env          {:elastic-host "http://127.0.0.1:9200"
                          :elastic-user "user"
                          :elastic-pass "pass"}}
 
-   :test {:env     {:elastic-host "localhost"
-                    :elastic-user "user"
-                    :elastic-pass "pass"}}})
+   :test {:env {:elastic-host "http://127.0.0.1:9200"
+                :elastic-user "user"
+                :elastic-pass "pass"}}})
