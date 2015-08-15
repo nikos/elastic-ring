@@ -45,10 +45,27 @@
 
 
 (defn qp
-  ;query and print
+  ;; query and print
   [q]
-  (let [res (esd/search conn index "event" :query q)
+  (let [res (esd/search conn index "event"
+                        :query q
+                        :sort {"_geo_distance" {"coord" {:lat 53.5
+                                                         :lon 10.0}
+                                                :order  "desc"
+                                                :unit   "km"}}
+                        )
         n (esrsp/total-hits res)
         hits (esrsp/hits-from res)]
     (println (format "Total hits: %d" n))
     (pp/pprint hits)))
+
+;; TODO: better use bounding box
+
+
+;; https://www.elastic.co/guide/en/elasticsearch/guide/current/sorting-by-distance.html
+
+;;(def distance
+;;  :query (q/filtered :query {:match_all {}}
+;;                     :filter {:geo_distance {:distance "20km"
+;;                                             "coord"   {:lat 53.5
+;;                                                        :lon 10.0}}}))
