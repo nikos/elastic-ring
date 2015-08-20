@@ -1,16 +1,28 @@
-(defproject mini-restful "0.1.0-SNAPSHOT"
+(defproject mini-restful "0.1.2-SNAPSHOT"
   :description "An example RESTful application written in Clojure using elasticseach as back-end"
   :url "https://github.com/nikos/mini-restful"
   :license {:name "MIT"
             :url  "http://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.6.0"]
+
+  :dependencies [[org.clojure/clojure "1.7.0"]
+
+                 ;; HTTP handling
                  [ring/ring-core "1.4.0"]
                  [ring/ring-jetty-adapter "1.4.0"]
-                 [clojurewerkz/elastisch "2.1.0"]
-                 [compojure "1.4.0"]
-                 [cheshire "5.5.0"]
                  [ring/ring-json "0.4.0"]
+
+                 [compojure "1.4.0"]
+
+                 ;; schema validation
+                 [prismatic/schema "0.4.3"]
+
+                 ;; elasticsearch driver
+                 [clojurewerkz/elastisch "2.1.0"]
+
+                 [clj-time "0.11.0"]
+                 [cheshire "5.5.0"]
                  [environ "1.0.0"]
+
                  [buddy/buddy-hashers "0.6.0"]
                  [buddy/buddy-auth "0.6.0"]
                  [crypto-random "1.2.0"]]
@@ -25,6 +37,7 @@
   ; See https://github.com/weavejester/lein-ring#web-server-options for the
   ; various options available for the lein-ring plugin
   :ring {:handler mini-restful.handler/app
+         :port    3000
          :nrepl   {:start? true
                    :port   9998}}
 
