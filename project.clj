@@ -17,7 +17,7 @@
                  [prismatic/schema "0.4.3"]
 
                  ;; elasticsearch driver
-                 [clojurewerkz/elastisch "2.1.0"]
+                 [clojurewerkz/elastisch "2.2.0-beta4"]
 
                  [clj-time "0.11.0"]
                  [cheshire "5.5.0"]

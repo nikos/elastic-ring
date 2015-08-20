@@ -7,7 +7,7 @@
             [ring.util.response :refer [response]]
             [cheshire.generate :refer [add-encoder]]
             [mini-restful.models.events :as events]
-            [mini-restful.auth :refer [auth-backend user-can user-isa user-has-id authenticated-user unauthorized-handler make-token!]]
+            [mini-restful.auth :refer [auth-backend user-can user-isa user-has-id authenticated-user unauthorized-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.auth.accessrules :refer [restrict]]))
 
@@ -43,10 +43,10 @@
            ;; EVENTS
            (context "/events" []
              (GET "/" [] get-events)
-             ;; (restrict {:handler  {:and [authenticated-user (user-can "manage-events")]}
-             ;;           :on-error unauthorized-handler}))
 
-             (POST "/" [] create-event)
+             (POST "/" [] (-> create-event
+                              (restrict {:handler  authenticated-user
+                                         :on-error unauthorized-handler})))
 
              (context "/:id" [id]
                (restrict
@@ -59,21 +59,16 @@
                                      (restrict {:handler  {:and [authenticated-user (user-can "manage-users")]}
                                                 :on-error unauthorized-handler}))))
 
-           (POST "/sessions" {{:keys [user-id password]} :body}
-             (let [userid-int (Integer/parseInt user-id)]
-               (if (and (= userid-int 42) (= password "42"))
-                 {:status 201
-                  :body   {:auth-token (make-token! userid-int)}}
-                 {:status 409
-                  :body   {:status  "error"
-                           :message "invalid username or password"}})))
-
            (route/not-found (response {:message "Page not found"})))
 
 (defn wrap-log-request [handler]
   (fn [req]
     (println req)
     (handler req)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main Entry Point
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def app
   (-> app-routes

@@ -1,48 +1,41 @@
 (ns mini-restful.auth
-  (:require [buddy.auth.backends.token :refer [token-backend]]
+  (:require [buddy.auth.backends.httpbasic :refer [http-basic-backend]]
             [buddy.auth.accessrules :refer [success error]]
             [buddy.auth :refer [authenticated?]]
             [crypto.random :refer [base64]]))
 
-(defn gen-session-id [] (base64 32))
+;; Global var that stores valid users with their
+;; respective passwords.
+(def authdata {:admin "secret"
+               :test  "secret"})
 
-(defn make-token!
-  "Creates an auth token in the database for the given user and puts it in the database"
-  [user-id]
-  (let [token (gen-session-id)]
-    ;;(insert e/auth-tokens
-    ;;        (values {:id      token
-    ;;                 :user_id user-id}))
-    token))
-
-(defn authenticate-token
-  "Validates a token, returning the id of the associated user when valid and nil otherwise"
-  [req token]
-  (let [sql (str "SELECT user_id "
-                 "FROM auth_tokens "
-                 "WHERE id = ? "
-                 "AND created_at > current_timestamp - interval '6 hours'")]
-    (some->                                                 ;;(exec-raw [sql [token]] :results)
-      ;;first
-      ;;:user_id
-      ;;users/find-by-id
-      {:id    42
-       :name  "Heini"
-       :level ::user})))
 
 (defn unauthorized-handler [req msg]
   {:status 401
    :body   {:status  :error
             :message (or msg "User not authorized")}})
 
-;; Looks for an "Authorization" header with a value of "Token XXX"
-;; where "XXX" is some valid token.
-(def auth-backend (token-backend {:authfn               authenticate-token
-                                  :unauthorized-handler unauthorized-handler}))
+;; Define function that is responsible of authenticating requests.
+;; In this case it receives a map with username and password and i
+;; should return a value that can be considered a "user" instance
+;; and should be a logical true.
+
+(defn my-authfn
+  [req {:keys [username password]}]
+  (when-let [user-password (get authdata (keyword username))]
+    (when (= password user-password)
+      (keyword username))))
+
+;; Create an instance of auth backend without explicit handler for
+;; unauthorized request. (That leaves the responsability to default
+;; backend implementation.
+
+(def auth-backend (http-basic-backend {:realm  "Mini-RESTful Example"
+                                       :authfn my-authfn}))
 
 ;; Map of actions to the set of user types authorized to perform that action
 (def permissions
-  {"manage-events" #{::user}})     ;;#{:mini-restful.models.events/event}})
+  {"manage-events" #{::user}})                              ;;#{:mini-restful.models.events/event}})
 
 ;;; Below are the handlers that Buddy will use for various authorization
 ;;; requirements the authenticated-user function determines whether a session
