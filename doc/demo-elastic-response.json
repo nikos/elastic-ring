@@ -1,0 +1,46 @@
+{
+  "count": 2,
+  "results": {
+    "_shards": {
+      "failed": 0,
+      "successful": 3,
+      "total": 3
+    },
+    "hits": {
+      "hits": [
+        {
+          "_id": "AU9MkwHWY_LCPakX5YYh",
+          "_index": "mini_dev",
+          "_score": 1.0,
+          "_source": {
+            "_created_at": "2015-08-20T19:25:46.822Z",
+            "coord": "53.5511,9.99164",
+            "desc": "... will come ...",
+            "location": "Hamburg",
+            "starttime": "2015-08-20T20:00",
+            "title": "Tanz im August"
+          },
+          "_type": "event"
+        },
+        {
+          "_id": "AU9Mky8YY_LCPakX5YYi",
+          "_index": "mini_dev",
+          "_score": 1.0,
+          "_source": {
+            "_created_at": "2015-08-20T19:25:58.419Z",
+            "coord": "53.5511,10.214",
+            "desc": "Packt die Schuhe ein",
+            "location": "Lüneburg",
+            "starttime": "2015-08-21T10:00",
+            "title": "Altstadtführung"
+          },
+          "_type": "event"
+        }
+      ],
+      "max_score": 1.0,
+      "total": 2
+    },
+    "timed_out": false,
+    "took": 1
+  }
+}

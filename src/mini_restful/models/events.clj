@@ -4,8 +4,6 @@
             [clj-time.format :as timefmt]
             [schema.core :as s]))
 
-;; TODO: see famito/djangoapp/famito/events/models.py for details
-
 ;; Name of mapping type in elasticsearch index
 (def mapping-type "event")
 
@@ -36,51 +34,55 @@
 
 ;; --------------------------------------------------------------------
 
-;; TODO: just dummy data
-(declare my-events)
-
-;; Use as format: "2015-08-20T18:43:39.747Z"
+;; Use ISO data format: "2015-08-20T18:43:39.747Z"
 (def datetime-formatter (timefmt/formatters :date-time))
 
 (defn now [] (timefmt/unparse datetime-formatter (timecore/now)))
 
-(defn create [event]
+(defn create [doc]
   (let [creation-timestamp (now)
-        doc {:location    "Hamburg"
-             :title       "Tanz in den Mai"
-             :coord       "53.5511,9.99164"
-             :starttime   creation-timestamp
-             :_created_at creation-timestamp
-             :desc        "... will come ..."}]
-    (s/validate NewEvent doc)
-    (elastic/add-doc mapping-type doc)
-    doc))
+        event (assoc doc :_created_at creation-timestamp)]
+    (s/validate NewEvent event)
+    (elastic/add-doc mapping-type event)
+    event))
 
 (defn find-all []
-  my-events)
+  (elastic/find-all-docs mapping-type))
 
 (defn find-by-id [id]
-  (filter #(= id (:id %)) my-events))
+  (elastic/find-by-id mapping-type id))
 
 (defn count-events []
-  (count my-events))
+  (elastic/total-docs mapping-type))
 
 (defn delete-event [event]
-  )
-
-(def my-events
-  [{:id       810
-    :name     "Foo"
-    :location "Hamburg"}
-   {:id       811
-    :name     "so und so ..."
-    :location "Kasel"}
-   {:id       815
-    :name     "Turbofrankonia"
-    :location "Würzburg"}])
+  (println "UNIMPLEMENTED"))
 
 (defn create-idx []
   (elastic/create-index {mapping-type EventMapping}))
 
 (defn delete-idx []
   (elastic/delete-index))
+
+
+;; === Populate some initial data
+
+;;(if (= count-events 0)
+(defn init-db []
+  (do
+    (println "No events found, let's create some...")
+
+    (delete-idx)
+    (create-idx)
+
+    (create {:location  "Hamburg"
+             :title     "Tanz im August"
+             :desc      "... will come ..."
+             :coord     "53.5511,9.99164"
+             :starttime "2015-08-20T20:00"})
+
+    (create {:location  "Lüneburg"
+             :title     "Altstadtführung"
+             :desc      "Packt die Schuhe ein"
+             :coord     "53.5511,10.214"
+             :starttime "2015-08-21T10:00"})))

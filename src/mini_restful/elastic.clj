@@ -3,7 +3,6 @@
             [clojurewerkz.elastisch.rest.index :as esi]
             [clojurewerkz.elastisch.rest.document :as esd]
             [clojurewerkz.elastisch.query :as q]
-            [clojurewerkz.elastisch.aggregation :as a]
             [clojurewerkz.elastisch.rest.response :as esrsp]
             [clojure.pprint :as pp]
             [environ.core :refer [env]]))
@@ -34,6 +33,19 @@
 
 (defn add-doc [mapping-type doc]
   (esd/create conn index mapping-type doc))
+
+(defn find-by-id [mapping-type id]
+  (esd/search conn index mapping-type :query {:_id id}))
+
+(defn find-all-docs [mapping-type]
+  (let [results (esd/search conn index mapping-type :query (q/match-all))
+        docs (esrsp/hits-from results)]
+    docs))
+
+(defn total-docs [mapping-type]
+  (let [results (esd/search conn index mapping-type :query (q/match-all) :size 0)
+        nr-hits (esrsp/total-hits results)]
+    nr-hits))
 
 
 ;; TODO: move over to events
