@@ -2,7 +2,8 @@
   (:require [mini-restful.elastic :as elastic]
             [clj-time.core :as timecore]
             [clj-time.format :as timefmt]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [clojure.tools.logging :as log]))
 
 ;; Name of mapping type in elasticsearch index
 (def mapping-type "event")
@@ -56,7 +57,7 @@
   (elastic/total-docs mapping-type))
 
 (defn delete-event [event]
-  (println "UNIMPLEMENTED"))
+  (log/warn "UNIMPLEMENTED"))
 
 (defn create-idx []
   (elastic/create-index {mapping-type EventMapping}))
@@ -70,7 +71,7 @@
 ;;(if (= count-events 0)
 (defn init-db []
   (do
-    (println "No events found, let's create some...")
+    (log/info "No events found, let's create some...")
 
     (delete-idx)
     (create-idx)

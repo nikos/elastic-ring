@@ -5,6 +5,7 @@
             :url  "http://opensource.org/licenses/MIT"}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
+                 [org.clojure/tools.logging "0.3.1"]
 
                  ;; HTTP handling
                  [ring/ring-core "1.4.0"]
