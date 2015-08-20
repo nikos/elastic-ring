@@ -1,5 +1,7 @@
 (ns mini-restful.models.events
   (:require [mini-restful.elastic :as elastic]
+            [clj-time.core :as timecore]
+            [clj-time.format :as timefmt]
             [schema.core :as s]))
 
 ;; TODO: see famito/djangoapp/famito/events/models.py for details
@@ -37,16 +39,20 @@
 ;; TODO: just dummy data
 (declare my-events)
 
-(defn now [] (java.util.Date.))
+;; Use as format: "2015-08-20T18:43:39.747Z"
+(def datetime-formatter (timefmt/formatters :date-time))
+
+(defn now [] (timefmt/unparse datetime-formatter (timecore/now)))
 
 (defn create [event]
-  (let [doc {:location    "Hamburg"
+  (let [creation-timestamp (now)
+        doc {:location    "Hamburg"
              :title       "Tanz in den Mai"
              :coord       "53.5511,9.99164"
-             :starttime   "2015-07-30T10:00:00+00:00"
-             :_created_at "now"
+             :starttime   creation-timestamp
+             :_created_at creation-timestamp
              :desc        "... will come ..."}]
-    ;;(s/validate NewEvent doc)
+    (s/validate NewEvent doc)
     (elastic/add-doc mapping-type doc)
     doc))
 

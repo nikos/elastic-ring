@@ -16,6 +16,7 @@
              (fn [^clojure.lang.Keyword kw ^JsonGenerator gen]
                (.writeString gen (name kw))))
 
+
 ;; =====================================================================
 
 (defn get-events [_]
@@ -36,8 +37,8 @@
   {:status  204
    :headers {"Location" "/events"}})
 
-;; =====================================================================
 
+;; =====================================================================
 
 (defroutes app-routes
            ;; EVENTS

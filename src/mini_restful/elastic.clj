@@ -36,11 +36,13 @@
   (esd/create conn index mapping-type doc))
 
 
+;; TODO: move over to events
 (defn qp
   ;; query and print
   [q]
   (let [res (esd/search conn index "event"
                         :query q
+                        ;; TODO: better use bounding box
                         :sort {"_geo_distance" {"coord" {:lat 53.5
                                                          :lon 10.0}
                                                 :order  "desc"
@@ -50,7 +52,6 @@
     (println (format "Total hits: %d" n))
     (pp/pprint hits)))
 
-;; TODO: better use bounding box
 
 
 ;; https://www.elastic.co/guide/en/elasticsearch/guide/current/sorting-by-distance.html
