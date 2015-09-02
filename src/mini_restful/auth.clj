@@ -59,7 +59,7 @@
           required-levels (get permissions action #{})]
       (if (some #(isa? user-level %) required-levels)
         (success)
-        (error (str "User of level " (name user-level) " is not authorized for action " (name action)))))))
+        (error (str "User of level " user-level " is not authorized for action " action))))))
 
 (defn user-isa
   "Return a handler that determines whenther the authenticated user is of a

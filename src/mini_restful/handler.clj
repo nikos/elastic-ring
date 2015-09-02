@@ -5,6 +5,8 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.util.response :refer [response]]
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [ring.middleware.params :refer [wrap-params]]
             [cheshire.generate :refer [add-encoder]]
             [mini-restful.models.events :as events]
             [mini-restful.auth :refer [auth-backend user-can user-isa user-has-id authenticated-user unauthorized-handler]]
@@ -16,21 +18,37 @@
              (fn [^clojure.lang.Keyword kw ^JsonGenerator gen]
                (.writeString gen (name kw))))
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(defn- bounding-box-from-params [top_right_lat top_right_lon bottom_left_lat bottom_left_lon]
+  {:top_right   {:lat (Double/parseDouble top_right_lat)
+                 :lon (Double/parseDouble top_right_lon)}
+   :bottom_left {:lat (Double/parseDouble bottom_left_lat)
+                 :lon (Double/parseDouble bottom_left_lon)}})
 
 ;; =====================================================================
-
-(defn get-events [_]
-  {:status 200
-   :body   {:count   (events/count-events)
-            :results (events/find-all)}})
 
 (defn create-event [{event :body}]
   (let [new-event (events/create event)]
     {:status  201
      :headers {"Location" (str "/events/" (:id new-event))}}))
 
+(defn get-events [_]
+  {:status 200
+   :body   {:count   (events/count-events)
+            :results (events/find-all)}})
+
 (defn find-event [{{:keys [id]} :params}]
   (response (events/find-by-id (read-string id))))
+
+(defn print-params [params]
+  (println "Empfangen" params)
+  {:status 200 :body "OK"})
+
+(defn find-events-by-bounding-box [params]
+  (println "Retrieved: " params)
+  (response (events/find-by-bbox (bounding-box-from-params (params :top_right_lat) (params :top_right_lon)
+                                                           (params :bottom_left_lat) (params :bottom_left_lon)))))
 
 (defn delete-event [{{:keys [id]} :params}]
   (events/delete-event {:id (read-string id)})
@@ -48,6 +66,9 @@
              (POST "/" [] (-> create-event
                               (restrict {:handler  authenticated-user
                                          :on-error unauthorized-handler})))
+
+             (GET "/by-test" [] print-params)
+             (GET "/by-location" [& params] find-events-by-bounding-box)
 
              (context "/:id" [id]
                (restrict
@@ -75,5 +96,6 @@
   (-> app-routes
       (wrap-authentication auth-backend)
       (wrap-authorization auth-backend)
-      wrap-json-response
+      (wrap-params)
+      (wrap-json-response)
       (wrap-json-body {:keywords? true})))

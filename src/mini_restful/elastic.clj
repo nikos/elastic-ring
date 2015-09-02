@@ -38,15 +38,23 @@
   (esd/create conn index mapping-type doc))
 
 (defn find-by-id [mapping-type id]
-  (esd/search conn index mapping-type :query {:_id id}))
+  (esd/search conn index mapping-type
+              :query {:_id id}))
+
+(defn find-by-bounding-box [mapping-type bounding-box]
+  (esd/search conn index mapping-type
+              :query (q/filtered :query (q/match-all)
+                                 :filter {:geo_bounding_box {"location" bounding-box}})))
 
 (defn find-all-docs [mapping-type]
-  (let [results (esd/search conn index mapping-type :query (q/match-all))
+  (let [results (esd/search conn index mapping-type
+                            :query (q/match-all))
         docs (esrsp/hits-from results)]
     docs))
 
 (defn total-docs [mapping-type]
-  (let [results (esd/search conn index mapping-type :query (q/match-all) :size 0)
+  (let [results (esd/search conn index mapping-type
+                            :query (q/match-all) :size 0)
         nr-hits (esrsp/total-hits results)]
     nr-hits))
 

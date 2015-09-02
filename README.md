@@ -41,7 +41,11 @@ To start the web application:
 
 See all import initial data:
 
-    http :3000/events
+    http localhost:3000/events
+
+Delete one event:
+
+    http -a admin:secret DELETE localhost:3000/events/<event-id>
 
 
 ## REPL session

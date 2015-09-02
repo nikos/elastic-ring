@@ -53,6 +53,9 @@
 (defn find-by-id [id]
   (elastic/find-by-id mapping-type id))
 
+(defn find-by-bbox [bounding-box]
+  (elastic/find-by-bounding-box mapping-type bounding-box))
+
 (defn count-events []
   (elastic/total-docs mapping-type))
 
@@ -71,7 +74,7 @@
 
 ;; === Populate some initial data
 
-(defn init-db []
+(defn init-db! []
   (do
     (log/info "No events found, let's create some...")
 
@@ -91,4 +94,4 @@
   (create-idx))
 
 (when-not (event-exists?)
-  (init-db))
+  (init-db!))
