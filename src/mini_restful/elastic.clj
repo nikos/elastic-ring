@@ -12,7 +12,7 @@
 ;;(esr/connect "http://127.0.0.1:9200"
 ;;             {:connection-manager (clj-http.conn-mgr/make-reusable-conn-manager {:timeout 10})})
 
-(def conn (esr/connect (get env :elastic-host)
+(def conn (esr/connect (get env :elastic-url)
                        {:basic-auth   [(get env :elastic-user) (get env :elastic-pass)]
                         :conn-timeout 5000}))
 
@@ -21,12 +21,15 @@
 
 
 
-;; TODO: this would loop over all model types initially
+;; TODO: this would make use of all available model types
 (defn create-index [mapping-types]
   (esi/create conn index
               :settings {"index" {"number_of_shards"   3
                                   "number_of_replicas" 0}}
               :mappings mapping-types))
+
+(defn index-exists? []
+  (esi/exists? conn index))
 
 (defn delete-index []
   (esi/delete conn index))

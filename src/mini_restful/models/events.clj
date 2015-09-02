@@ -56,6 +56,9 @@
 (defn count-events []
   (elastic/total-docs mapping-type))
 
+(defn event-exists? []
+  (> (count-events) 0))
+
 (defn delete-event [event]
   (log/warn "UNIMPLEMENTED"))
 
@@ -68,13 +71,9 @@
 
 ;; === Populate some initial data
 
-;;(if (= count-events 0)
 (defn init-db []
   (do
     (log/info "No events found, let's create some...")
-
-    (delete-idx)
-    (create-idx)
 
     (create {:location  "Hamburg"
              :title     "Tanz im August"
@@ -87,3 +86,9 @@
              :desc      "Packt die Schuhe ein"
              :coord     "53.5511,10.214"
              :starttime "2015-08-21T10:00"})))
+
+(when-not (elastic/index-exists?)
+  (create-idx))
+
+(when-not (event-exists?)
+  (init-db))

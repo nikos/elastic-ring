@@ -47,10 +47,10 @@
                          [ring-mock "0.1.5"]]
           ; Since we are using environ, we can override these values with
           ; environment variables in production.
-          :env          {:elastic-host "http://127.0.0.1:9200"
+          :env          {:elastic-url  "http://127.0.0.1:9200"
                          :elastic-user "user"
                          :elastic-pass "pass"}}
 
-   :test {:env {:elastic-host "http://127.0.0.1:9200"
+   :test {:env {:elastic-url  "http://127.0.0.1:9200"
                 :elastic-user "user"
                 :elastic-pass "pass"}}})
