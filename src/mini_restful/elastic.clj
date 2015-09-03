@@ -44,7 +44,7 @@
 (defn find-by-bounding-box [mapping-type bounding-box]
   (esd/search conn index mapping-type
               :query (q/filtered :query (q/match-all)
-                                 :filter {:geo_bounding_box {"location" bounding-box}})))
+                                 :filter {:geo_bounding_box {"coord" bounding-box}})))  ;; TODO: this field is event specific
 
 (defn find-all-docs [mapping-type]
   (let [results (esd/search conn index mapping-type

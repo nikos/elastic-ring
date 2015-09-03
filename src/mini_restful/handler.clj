@@ -45,10 +45,12 @@
   (println "Empfangen" params)
   {:status 200 :body "OK"})
 
-(defn find-events-by-bounding-box [params]
+(defn find-events-by-bounding-box [{params :params}]
+;;(defn find-events-by-bounding-box [{{:keys [top_right_lat top_right_lon bottom_left_lat bottom_left_lon]} :params}]
   (println "Retrieved: " params)
-  (response (events/find-by-bbox (bounding-box-from-params (params :top_right_lat) (params :top_right_lon)
-                                                           (params :bottom_left_lat) (params :bottom_left_lon)))))
+  ;;  {bottom_left_lon 10.1, top_right_lat 49.9, bottom_left_lat 9.7, top_right_lon 51.1}
+  ;;(println "Retrieved: " top_right_lat top_right_lon bottom_left_lat bottom_left_lon)
+  (response (events/find-by-bbox (bounding-box-from-params "53.8" "10.6" "53.2" "9.5"))))
 
 (defn delete-event [{{:keys [id]} :params}]
   (events/delete-event {:id (read-string id)})
@@ -68,7 +70,7 @@
                                          :on-error unauthorized-handler})))
 
              (GET "/by-test" [] print-params)
-             (GET "/by-location" [& params] find-events-by-bounding-box)
+             (GET "/by-location" [] find-events-by-bounding-box)
 
              (context "/:id" [id]
                (restrict
@@ -96,6 +98,6 @@
   (-> app-routes
       (wrap-authentication auth-backend)
       (wrap-authorization auth-backend)
-      (wrap-params)
+      (wrap-params)  ;; turns 'query-string' into 'params' key-value map
       (wrap-json-response)
       (wrap-json-body {:keywords? true})))
