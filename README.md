@@ -43,6 +43,10 @@ See all import initial data:
 
     http localhost:3000/events
 
+Search in a boundary box:
+
+   http -v localhost:3000/events/by-location top_right_lat==49.9 top_right_lon==51.1 bottom_left_lat==9.7 bottom_left_lon==10.1
+
 Delete one event:
 
     http -a admin:secret DELETE localhost:3000/events/<event-id>
