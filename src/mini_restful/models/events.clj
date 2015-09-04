@@ -54,7 +54,7 @@
   (elastic/find-by-id mapping-type id))
 
 (defn find-by-bbox [bounding-box]
-  (elastic/find-by-bounding-box mapping-type bounding-box))
+  (elastic/find-by-bounding-box mapping-type "coord" bounding-box))
 
 (defn count-events []
   (elastic/total-docs mapping-type))
