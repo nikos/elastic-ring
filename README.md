@@ -1,4 +1,4 @@
-# mini-restful
+# elastic-ring
 
 An example application on how to integrate elasticsearch with a clojure REST back-end
 allowing to store and query for sample data.
