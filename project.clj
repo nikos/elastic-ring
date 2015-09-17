@@ -1,6 +1,6 @@
 (defproject mini-restful "0.1.2-SNAPSHOT"
   :description "An example RESTful application written in Clojure using elasticseach as back-end"
-  :url "https://github.com/nikos/mini-restful"
+  :url "https://github.com/nikos/elastic-ring"
   :license {:name "MIT"
             :url  "http://opensource.org/licenses/MIT"}
 
@@ -37,7 +37,7 @@
 
   ; See https://github.com/weavejester/lein-ring#web-server-options for the
   ; various options available for the lein-ring plugin
-  :ring {:handler mini-restful.handler/app
+  :ring {:handler elastic-ring.handler/app
          :port    3000
          :nrepl   {:start? true
                    :port   9998}}

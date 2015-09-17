@@ -1,5 +1,5 @@
-(ns mini-restful.models.events
-  (:require [mini-restful.elastic :as elastic]
+(ns elastic-ring.models.events
+  (:require [elastic-ring.elastic :as elastic]
             [clj-time.core :as timecore]
             [clj-time.format :as timefmt]
             [schema.core :as s]

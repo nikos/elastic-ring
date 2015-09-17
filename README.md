@@ -55,7 +55,7 @@ Delete one event:
 ## REPL session
 
     lein repl
-    (use 'mini-restful.models.events)
+    (use 'elastic-ring.models.events)
 
 
 

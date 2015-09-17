@@ -1,4 +1,4 @@
-(ns mini-restful.auth
+(ns elastic-ring.auth
   (:require [buddy.auth.backends.httpbasic :refer [http-basic-backend]]
             [buddy.auth.accessrules :refer [success error]]
             [buddy.auth :refer [authenticated?]]
@@ -35,7 +35,7 @@
 
 ;; Map of actions to the set of user types authorized to perform that action
 (def permissions
-  {"manage-events" #{::user}})                              ;;#{:mini-restful.models.events/event}})
+  {"manage-events" #{::user}})                              ;;#{:elastic_ring.models.events/event}})
 
 ;;; Below are the handlers that Buddy will use for various authorization
 ;;; requirements the authenticated-user function determines whether a session

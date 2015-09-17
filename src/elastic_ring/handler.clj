@@ -1,4 +1,4 @@
-(ns mini-restful.handler
+(ns elastic-ring.handler
   (:use compojure.core
         ring.middleware.json)
   (:import (com.fasterxml.jackson.core JsonGenerator))
@@ -8,8 +8,8 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.params :refer [wrap-params]]
             [cheshire.generate :refer [add-encoder]]
-            [mini-restful.models.events :as events]
-            [mini-restful.auth :refer [auth-backend user-can user-isa user-has-id authenticated-user unauthorized-handler]]
+            [elastic-ring.models.events :as events]
+            [elastic-ring.auth :refer [auth-backend user-can user-isa user-has-id authenticated-user unauthorized-handler]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.auth.accessrules :refer [restrict]]))
 

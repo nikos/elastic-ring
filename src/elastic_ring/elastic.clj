@@ -1,4 +1,4 @@
-(ns mini-restful.elastic
+(ns elastic-ring.elastic
   (:require [clojurewerkz.elastisch.rest :as esr]
             [clojurewerkz.elastisch.rest.index :as esi]
             [clojurewerkz.elastisch.rest.document :as esd]
